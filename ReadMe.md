@@ -1,32 +1,50 @@
 📂 Folder & File Structure (Backend - Node.js + Express + MongoDB + JWT Auth)
 backend/
-│── config/
-│   └── db.js                # MongoDB connection setup
-│
-│── controllers/
-│   ├── authController.js    # Login, Signup, JWT handling
-│   ├── userController.js    # User CRUD operations
-│   └── roleController.js    # Role management (if RBAC)
-│
-│── middlewares/
-│   ├── authMiddleware.js    # JWT verification
-│   └── roleMiddleware.js    # Role-based access control
-│
-│── models/
-│   ├── User.js              # User Schema
-│   └── Role.js              # Role Schema
-│
-│── routes/
-│   ├── authRoutes.js        # Login/Signup API endpoints
-│   ├── userRoutes.js        # User-related endpoints
-│   └── roleRoutes.js        # Role-related endpoints
-│
-│── utils/
-│   └── generateToken.js     # Helper function for JWT
-│
-│── .env                     # Secrets (DB URI, JWT_SECRET, PORT)
-│── package.json             
-│── server.js                # Entry point
+
+
+/config
+   db.js
+
+/controllers
+   authController.js
+   productController.js
+   orderController.js      <-- NEW
+   paymentController.js    <-- NEW
+   reviewController.js     <-- NEW
+   adminController.js      <-- NEW
+   reportController.js     <-- NEW
+
+/middlewares
+   authMiddleware.js
+   roleMiddleware.js
+   errorMiddleware.js      <-- NEW (for centralized error handling)
+
+/models
+   User.js
+   Product.js
+   Order.js                <-- NEW
+   Payment.js              <-- NEW (optional if storing transactions)
+   Review.js               <-- NEW
+
+/routes
+   authRoutes.js
+   productRoutes.js
+   orderRoutes.js          <-- NEW
+   paymentRoutes.js        <-- NEW
+   reviewRoutes.js         <-- NEW
+   adminRoutes.js          <-- NEW
+   reportRoutes.js         <-- NEW
+
+/utils
+   generateToken.js
+   sendEmail.js            <-- for order/payment notifications
+   logger.js               <-- optional (for logs)
+
+/server.js
+
+
+
+
 
 📦 Packages Needed
 

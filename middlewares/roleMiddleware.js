@@ -1,4 +1,4 @@
-const authorizeRoles = (...allowed) => {
+const restrictTo  = (...allowed) => {
   return (req, res, next) => {
     if (!req.user) 
         return res.status(401).json({ message: "Unauthorized" });
@@ -9,4 +9,4 @@ const authorizeRoles = (...allowed) => {
   };
 };
 
-module.exports = { authorizeRoles };
+module.exports = { restrictTo  };

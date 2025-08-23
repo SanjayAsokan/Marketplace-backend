@@ -13,6 +13,7 @@ const productSchema = new mongoose.Schema({
     ratingAvg: { type: Number, default: 0 },
     ratingCount: { type: Number, default: 0 },
     stock: { type: Number, default: 0, min: 0 }, 
+    isApproved: { type: Boolean, default: false }
   },{ timestamps: true });
 
 productSchema.index({ title: "text", description: "text", category: "text" });

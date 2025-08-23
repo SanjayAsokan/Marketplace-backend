@@ -3,9 +3,10 @@ const Product = require("../models/Product");
 exports.createProduct = async (req, res) => {
     try {
         const { title, description, price, currency, category, images, status, stock } = req.body;
-        
+        const imageUrls = req.files ? req.files.map(file => file.path) : [];
+
         const product = await Product.create({vendor: req.user._id, // owner = logged-in vendor
-            title, description, price, currency, category, images, status, stock, });
+            title, description, price, currency, category, images: imageUrls, status, stock, });
     res.status(201).json(product);
     }
     catch (err) {

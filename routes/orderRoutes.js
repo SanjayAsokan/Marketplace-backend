@@ -6,9 +6,13 @@ const {createOrder, getAllOrders, getOrderById, updateOrderStatus, deleteOrder,}
 const router = express.Router();
 
 router.post("/", protect, restrictTo("user"), createOrder);
+
 router.get("/", protect, restrictTo("admin", "vendor"), getAllOrders);
+
 router.get("/:id", protect, getOrderById);
+
 router.put("/:id", protect, restrictTo("admin", "vendor"), updateOrderStatus);
+
 router.delete("/:id", protect, restrictTo("admin"), deleteOrder);
 
 module.exports = router;

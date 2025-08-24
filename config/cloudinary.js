@@ -9,11 +9,11 @@ cloudinary.config({
 });
 
 const storage = new CloudinaryStorage({
-    cloudinary,
-    params: {
-        folder: "ecommerce_products",
-        allowed_formats: ["jpg", "png", "jpeg", "webp"],
-    },
+  cloudinary,
+  params: {
+    folder: "ecommerce_products",
+    allowed_formats: ["jpg", "png", "jpeg", "webp","avif"],
+  },
 });
 
 const upload = multer({ storage });

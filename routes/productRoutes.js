@@ -1,17 +1,21 @@
 const express = require("express");
-const {createProduct, getProducts, getProductById, updateProduct, deleteProduct,} = require("../controllers/productController");
+const router = express.Router();
 const { protect } = require("../middlewares/authMiddleware");
-const { restrictTo  } = require("../middlewares/roleMiddleware");
+const {
+  createProduct,
+  getProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
+} = require("../controllers/productController");
+
 const { upload } = require("../config/cloudinary");
 
-const router = express.Router();
-
+// Create a product (with multiple images)
+router.post("/", protect, upload.array("images", 5), createProduct);
 router.get("/", getProducts);
 router.get("/:id", getProductById);
-
-router.post("/", protect, restrictTo("vendor", "admin"), upload.array("images", 5), createProduct);
-
-router.patch("/:id", protect, restrictTo ("vendor", "admin"), updateProduct);
-router.delete("/:id", protect, restrictTo ("vendor", "admin"), deleteProduct);
+router.put("/:id", protect, upload.array("images", 5), updateProduct); // optional image update
+router.delete("/:id", protect, deleteProduct);
 
 module.exports = router;

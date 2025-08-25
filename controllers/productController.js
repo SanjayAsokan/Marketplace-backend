@@ -4,10 +4,8 @@ exports.createProduct = async (req, res) => {
   try {
     const { title, description, price, currency, category, status, stock } = req.body;
 
-    // Cloudinary URLs for uploaded images
     const imageUrls = req.files ? req.files.map(file => file.path) : [];
 
-    // Validate required fields
     if (!title || !price) {
       return res.status(400).json({ message: "Title and price are required" });
     }
@@ -22,7 +20,7 @@ exports.createProduct = async (req, res) => {
       images: imageUrls,
       status,
       stock,
-      isApproved: false, // default false
+      isApproved: false, 
     });
 
     res.status(201).json(product);
@@ -41,16 +39,14 @@ exports.updateProduct = async (req, res) => {
       return res.status(403).json({ message: "You can update only your products" });
     }
 
-    // Update allowed fields
     const allowed = ["title", "description", "price", "currency", "category", "status", "stock", "isApproved"];
     allowed.forEach((key) => {
       if (key in req.body) prod[key] = req.body[key];
     });
 
-    // Update images if new images uploaded
     if (req.files && req.files.length > 0) {
       const imageUrls = req.files.map(file => file.path);
-      prod.images = [...prod.images, ...imageUrls]; // append new images
+      prod.images = [...prod.images, ...imageUrls]; 
     }
 
     await prod.save();

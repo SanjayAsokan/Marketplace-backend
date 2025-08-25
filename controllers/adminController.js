@@ -3,7 +3,7 @@ const Product = require("../models/Product");
 
  // ADMIN CONTROLLER Handles Vendor & Product management by Admin
 
-const adminController = {// Get all vendors
+const adminController = {
     getAllVendors: async (req, res) => {
         try {
             const vendors = await User.find({ role: "vendor" });
@@ -12,7 +12,6 @@ const adminController = {// Get all vendors
             res.status(500).json({ message: "Error fetching vendors", error: err.message });
         }
     },
-    // Approve vendor
     approveVendor: async (req, res) => {
         try {
             const vendor = await User.findByIdAndUpdate(req.params.vendorId, { isApproved: true }, { new: true });
@@ -23,7 +22,6 @@ const adminController = {// Get all vendors
             res.status(500).json({ message: "Error approving vendor", error: err.message });
         }
     },
-    // Reject vendor
     rejectVendor: async (req, res) => {
         try {
             const vendor = await User.findByIdAndUpdate(req.params.vendorId, { isApproved: false },{ new: true });
@@ -34,7 +32,6 @@ const adminController = {// Get all vendors
             res.status(500).json({ message: "Error rejecting vendor", error: err.message });
         }
     },
-    // Delete vendor
     deleteVendor: async (req, res) => {
         try {
             const vendor = await User.findByIdAndDelete(req.params.vendorId);
@@ -45,7 +42,6 @@ const adminController = {// Get all vendors
             res.status(500).json({ message: "Error deleting vendor", error: err.message });
         }
     },
-    // Get all products
     getAllProducts: async (req, res) => {
         try {
             const products = await Product.find().populate("vendor", "name email");
@@ -54,7 +50,6 @@ const adminController = {// Get all vendors
             res.status(500).json({ message: "Error fetching products", error: err.message });
         }
     },
-    // Approve product
     approveProduct: async (req, res) => {
         try {
             const product = await Product.findByIdAndUpdate(req.params.productId, { isApproved: true }, { new: true });
@@ -66,7 +61,6 @@ const adminController = {// Get all vendors
         }
     },
 
-  // Reject product
     rejectProduct: async (req, res) => {
         try {
             const product = await Product.findByIdAndUpdate(req.params.productId, { isApproved: false }, { new: true });
@@ -77,7 +71,6 @@ const adminController = {// Get all vendors
             res.status(500).json({ message: "Error rejecting product", error: err.message });
         }
     },
-    // Delete product
     deleteProduct: async (req, res) => {
         try {
             const product = await Product.findByIdAndDelete(req.params.productId);

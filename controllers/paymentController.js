@@ -1,6 +1,7 @@
 const Razorpay = require("razorpay");
-const Order = require("../models/Order");
 const Payment = require("../models/Payment");
+const Order = require("../models/Order");
+const Product = require("../models/Product");
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -9,52 +10,72 @@ const razorpay = new Razorpay({
 
 exports.createPayment = async (req, res) => {
   try {
-    const { orderId } = req.body;
+    const { products } = req.body;
+    if (!products || products.length === 0) {
+      return res.status(400).json({ message: "No products provided" });
+    }
 
-    const order = await Order.findById(orderId);
-    if (!order) return res.status(404).json({ message: "Order not found" });
+    let totalAmount = 0;
+    for (const item of products) {
+      const product = await Product.findById(item.product);
+      if (!product) return res.status(404).json({ message: "Product not found" });
+      totalAmount += product.price * item.quantity;
+    }
 
     const options = {
-      amount: order.totalAmount * 100, // in paise
+      amount: Math.round(totalAmount * 100), 
       currency: "INR",
-      receipt: order._id.toString(),
+      receipt: "receipt_" + Date.now(),
     };
-
     const razorpayOrder = await razorpay.orders.create(options);
 
     const payment = await Payment.create({
-      orderId: order._id,
-      razorpayPaymentId: razorpayOrder.id,
-      amount: order.totalAmount,
+      user: req.user._id,
+      products,
+      amount: totalAmount,
+      currency: "INR",
+      razorpayOrderId: razorpayOrder.id,
       status: "created",
     });
 
-    order.paymentStatus = "created";
-    await order.save();
-
-    res.status(200).json({ order, razorpayOrder });
+    res.status(200).json({ razorpayOrder, paymentId: payment._id });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Payment creation failed:", err);
+    res.status(500).json({ message: "Payment creation failed", error: err.message });
   }
 };
 
-exports.webhook = async (req, res) => {
+exports.verifyPayment = async (req, res) => {
   try {
-    const payload = req.body;
-    const { razorpay_payment_id, razorpay_order_id } = payload.payload.payment.entity;
+    const { razorpay_payment_id, razorpay_order_id, paymentId } = req.body;
 
-    const payment = await Payment.findOne({ razorpayPaymentId: razorpay_order_id });
+    const payment = await Payment.findById(paymentId);
     if (!payment) return res.status(404).json({ message: "Payment not found" });
 
     payment.status = "paid";
-    payment.rawResponse = payload;
+    payment.razorpayPaymentId = razorpay_payment_id;
     await payment.save();
 
-    await Order.findByIdAndUpdate(payment.orderId, { paymentStatus: "paid", status: "processing" });
+    const orderProducts = payment.products.map((p) => ({
+      product: p.product,
+      quantity: p.quantity,
+    }));
 
-    res.status(200).json({ message: "Payment verified successfully" });
+    const order = await Order.create({
+      user: payment.user,
+      products: orderProducts,
+      totalAmount: payment.amount,
+      paymentStatus: "paid",
+      status: "processing",
+    });
+
+    payment.orderId = order._id;
+    await payment.save();
+
+    res.status(200).json({ message: "Payment verified & order created", order });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Payment verification failed:", err);
+    res.status(500).json({ message: "Payment verification failed", error: err.message });
   }
 };
 
@@ -66,16 +87,20 @@ exports.refundPayment = async (req, res) => {
     if (!payment) return res.status(404).json({ message: "Payment not found" });
 
     const refund = await razorpay.payments.refund(payment.razorpayPaymentId, {
-      amount: amount ? amount * 100 : payment.amount * 100
+      amount: amount ? Math.round(amount * 100) : Math.round(payment.amount * 100),
     });
 
     payment.status = "refunded";
     await payment.save();
 
-    await Order.findByIdAndUpdate(payment.orderId, { status: "cancelled", paymentStatus: "refunded" });
+    await Order.findByIdAndUpdate(payment.orderId, {
+      status: "cancelled",
+      paymentStatus: "refunded",
+    });
 
     res.status(200).json({ message: "Refund successful", refund });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Refund failed:", err);
+    res.status(500).json({ message: "Refund failed", error: err.message });
   }
 };

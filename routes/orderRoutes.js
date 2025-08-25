@@ -1,13 +1,19 @@
 const express = require("express");
 const { protect } = require("../middlewares/authMiddleware");
 const { restrictTo } = require("../middlewares/roleMiddleware");
-const {createOrder, getAllOrders, getOrderById, updateOrderStatus, deleteOrder,} = require("../controllers/orderController");
+const {
+  getAllOrders,
+  getOrderById,
+  updateOrderStatus,
+  deleteOrder,
+  getMyOrders,
+} = require("../controllers/orderController");
 
 const router = express.Router();
 
-router.post("/", protect, restrictTo("user"), createOrder);
-
 router.get("/", protect, restrictTo("admin", "vendor"), getAllOrders);
+
+router.get("/my-orders", protect, getMyOrders);
 
 router.get("/:id", protect, getOrderById);
 

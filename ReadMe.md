@@ -1,86 +1,63 @@
-📂 Folder & File Structure (Backend - Node.js + Express + MongoDB + JWT Auth)
+🛒 Multi-Vendor E-Commerce Backend
+
+This is the backend API for the Multi-Vendor E-Commerce Marketplace.
+It powers the platform with authentication, product management, cart & orders, vendor controls, and admin features.
+
+Built using Node.js, Express, and MongoDB, with JWT authentication for secure access.
+
+🚀 Features
+👤 User
+
+Register & Login (JWT authentication)
+
+Browse products across vendors
+
+Add to cart & place orders
+
+View order history
+
+🛍 Vendor
+
+Create, edit, and delete products
+
+Manage inventory and pricing
+
+Track sales
+
+🛡 Admin
+
+Manage vendors (approve, suspend, delete)
+
+Manage products across vendors
+
+View analytics & revenue reports
+
+🛠 Tech Stack
+
+Node.js – JavaScript runtime
+
+Express.js – Web framework
+
+MongoDB + Mongoose – Database
+
+JWT (JSON Web Tokens) – Authentication
+
+Bcrypt – Password hashing
+
+Multer / Cloud Storage – Product image upload
+
+Cors – Secure cross-origin requests
+
+📂 Project Structure
 backend/
-
-
-/config
-   db.js
-
-/controllers
-   authController.js
-   productController.js
-   orderController.js      <-- NEW
-   paymentController.js    <-- NEW
-   reviewController.js     <-- NEW
-   adminController.js      <-- NEW
-   reportController.js     <-- NEW
-
-/middlewares
-   authMiddleware.js
-   roleMiddleware.js
-   errorMiddleware.js      <-- NEW (for centralized error handling)
-
-/models
-   User.js
-   Product.js
-   Order.js                <-- NEW
-   Payment.js              <-- NEW (optional if storing transactions)
-   Review.js               <-- NEW
-
-/routes
-   authRoutes.js
-   productRoutes.js
-   orderRoutes.js          <-- NEW
-   paymentRoutes.js        <-- NEW
-   reviewRoutes.js         <-- NEW
-   adminRoutes.js          <-- NEW
-   reportRoutes.js         <-- NEW
-
-/utils
-   generateToken.js
-   sendEmail.js            <-- for order/payment notifications
-   logger.js               <-- optional (for logs)
-
-/server.js
-
-
-
-
-
-📦 Packages Needed
-
-Run this inside backend folder:
-
-npm init -y
-npm install express mongoose bcryptjs jsonwebtoken dotenv cors
-npm install --save-dev nodemon
-
-
-express → Web framework
-
-mongoose → MongoDB ORM
-
-bcryptjs → Password hashing
-
-jsonwebtoken → JWT authentication
-
-dotenv → Manage environment variables
-
-cors → Allow cross-origin requests (for frontend)
-
-nodemon → Auto-restart server in dev mode
-
-⚡ Flow of MVC
-
-server.js → starts app & loads routes.
-
-routes/ → defines endpoints (e.g., /api/auth/login).
-
-controllers/ → logic for each route (login, signup, etc.).
-
-models/ → defines MongoDB schema.
-
-middlewares/ → protects routes (JWT, roles).
-
-config/db.js → connects MongoDB.
-
-utils/ → helper functions (like JWT generator).
+│── src/
+│   ├── config/             # DB & JWT config
+│   ├── controllers/        # Route controllers (business logic)
+│   ├── middlewares/        # Auth & validation
+│   ├── models/             # Mongoose models (User, Vendor, Product, Order)
+│   ├── routes/             # API routes
+│   ├── utils/              # Helpers (email, validation, etc.)
+│   └── server.js           # Main entry point
+│── .env                    # Environment variables
+│── package.json
+│── README.md

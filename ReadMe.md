@@ -5,6 +5,9 @@ It powers the platform with authentication, product management, cart & orders, v
 
 Built using Node.js, Express, and MongoDB, with JWT authentication for secure access.
 
+
+Deploy Link: https://ecommerce-backend-v6q2.onrender.com
+
 🚀 Features
 👤 User
 
